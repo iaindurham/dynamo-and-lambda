@@ -1,0 +1,58 @@
+{
+  "name": "dynamo-and-lambda",
+  "version": "1.0.0",
+  "description": "Example of using DynamoDB and Lambda in AWS using Serverless framework",
+  "main": "handler.js",
+  "scripts": {
+    "format": "prettier --write '**/*.js'",
+    "lint": "eslint '**/*.js'",
+    "test": "jest",
+    "test:coverage": "npm run test -- --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iaindurham/dynamo-and-lambda.git"
+  },
+  "author": "iaindurham",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iaindurham/dynamo-and-lambda/issues"
+  },
+  "homepage": "https://github.com/iaindurham/dynamo-and-lambda#readme",
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run lint && npm test"
+    }
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/src/",
+      "<rootDir>/tests/"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/coverage/"
+    ],
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/tests/",
+      "<rootDir>/node_modules/"
+    ]
+  },
+  "devDependencies": {
+    "aws-sdk-mock": "^4.5.0",
+    "env-cmd": "^9.0.3",
+    "eslint": "^6.3.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-prettier": "^3.1.0",
+    "husky": "^3.0.4",
+    "jest": "^24.9.0",
+    "prettier": "^1.18.2"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.520.0",
+    "uuid": "^3.3.3"
+  }
+}
