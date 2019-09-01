@@ -3,6 +3,9 @@ node_modules
 
 # Serverless directories
 .serverless
+.dynamodb
 
-coverage/
-.idea/
+coverage
+.idea
+
+.env

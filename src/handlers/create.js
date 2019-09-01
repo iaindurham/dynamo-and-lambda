@@ -1,15 +1,27 @@
-const create = async event => {
+const validateUserRequest = require('../utils/validateUserRequest')
+const database = require('../services/database')
+
+const create = async ({ body }) => {
+  let userData
+
+  try {
+    userData = JSON.parse(body)
+    await validateUserRequest.add(userData)
+  } catch (err) {
+    return {
+      statusCode: 400,
+      body: `user data not valid: ${err.message}`
+    }
+  }
+
+  const createdUser = await database.create(userData)
+
   return {
     statusCode: 200,
-    body: JSON.stringify(
-      {
-        message: 'Go Serverless v1.0! Your function executed successfully!',
-        input: event
-      },
-      null,
-      2
-    )
+    body: JSON.stringify(createdUser)
   }
 }
 
-export default create
+module.exports = {
+  create
+}

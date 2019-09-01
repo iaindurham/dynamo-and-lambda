@@ -1,15 +1,23 @@
-const del = async event => {
+const database = require('../services/database')
+
+const del = async ({ pathParameters: { id } }) => {
+  const user = await database.get(id)
+
+  if (!user) {
+    return {
+      statusCode: 404,
+      body: 'User not found'
+    }
+  }
+
+  await database.del(id)
+
   return {
     statusCode: 200,
-    body: JSON.stringify(
-      {
-        message: 'Go Serverless v1.0! Your function executed successfully!',
-        input: event
-      },
-      null,
-      2
-    )
+    body: `Deleted user ${id}`
   }
 }
 
-export default del
+module.exports = {
+  del
+}

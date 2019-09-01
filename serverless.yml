@@ -1,5 +1,10 @@
-service: dynamo-and-lambda
+org: iaindurham
 app: dynamo-and-lambda-app
+service: dynamo-and-lambda
+
+plugins:
+  - serverless-offline
+  - serverless-dynamodb-local
 
 provider:
   name: aws
@@ -20,60 +25,57 @@ provider:
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
-  functions:
-    create:
-      handler: handlers/create.default
-      events:
-        - http:
-            path: users
-            method: post
-            cors: true
+custom:
+  dynamodb:
+    stages:
+      - ${self:provider.stage}
 
-  #  list:
-  #    handler: handlers/list.default
-  #    events:
-  #      - http:
-  #          path: users
-  #          method: get
-  #          cors: true
+functions:
+  create:
+    handler: src/handlers/create.create
+    events:
+      - http:
+          path: users
+          method: post
+          cors: true
 
-    get:
-      handler: handlers/get.default
-      events:
-        - http:
-            path: users/{id}
-            method: get
-            cors: true
+  get:
+    handler: src/handlers/get.get
+    events:
+      - http:
+          path: users/{id}
+          method: get
+          cors: true
 
-    update:
-      handler: handlers/update.default
-      events:
-        - http:
-            path: users/{id}
-            method: put
-            cors: true
+  update:
+    handler: src/handlers/update.update
+    events:
+      - http:
+          path: users/{id}
+          method: put
+          cors: true
 
-    delete:
-      handler: handlers/delete.default
-      events:
-        - http:
-            path: users/{id}
-            method: delete
-            cors: true
+  delete:
+    handler: src/handlers/delete.del
+    events:
+      - http:
+          path: users/{id}
+          method: delete
+          cors: true
 
-  resources:
-    Resources:
-      TodosDynamoDbTable:
-        Type: 'AWS::DynamoDB::Table'
-#        DeletionPolicy: Retain
-        Properties:
-          AttributeDefinitions:
-            - AttributeName: id
-              AttributeType: S
-          KeySchema:
-            - AttributeName: id
-              KeyType: HASH
-          ProvisionedThroughput:
-            ReadCapacityUnits: 1
-            WriteCapacityUnits: 1
-          TableName: ${self:provider.environment.DYNAMODB_TABLE}
+resources:
+  Resources:
+    TodosDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+#      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}

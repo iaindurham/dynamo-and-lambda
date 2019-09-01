@@ -1,7 +1,19 @@
-module.exports = {
-  id: '32423-234-2-23423-2342',
+const newUser = {
   firstName: 'Fred',
   lastName: 'Smith',
   email: 'f@s.com',
   credentials: 'asfdasfwfsadfsa'
+}
+
+const createdUser = {
+  ...newUser,
+  id: expect.any(String)
+}
+
+const { credentials, ...retrievedUser } = createdUser
+
+module.exports = {
+  createdUser,
+  newUser,
+  retrievedUser
 }

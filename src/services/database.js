@@ -1,4 +1,6 @@
 const AWS = require('aws-sdk')
+const uuid = require('uuid').v4
+const stripCredentials = require('../utils/stripCredentials')
 
 let createdClient
 
@@ -12,20 +14,22 @@ const createClient = () => {
         endpoint: 'http://localhost:8000'
       })
     : new AWS.DynamoDB.DocumentClient({ convertEmptyValues: true })
+  // createdClient = dynamodb.doc
 
   return createdClient
 }
 
 const client = () => createdClient || createClient()
+const tableName = () => process.env.DYNAMODB_TABLE
 
 // This is needed for the tests to allow for the AWS.DynamoDB.DocumentClient to be mocked
 function resetClient() {
   createdClient = null
 }
 
-const get = async ({ tableName, id }) => {
+const get = async (id, { raw = false } = {}) => {
   const params = {
-    TableName: tableName,
+    TableName: tableName(),
     Key: {
       id
     }
@@ -34,24 +38,16 @@ const get = async ({ tableName, id }) => {
     .get(params)
     .promise()
 
-  return result.Item || null
-}
-
-const scan = async ({ tableName }) => {
-  const params = {
-    TableName: tableName
+  if (result.Item) {
+    return raw ? result.Item : stripCredentials(result.Item)
   }
 
-  const results = await client()
-    .scan(params)
-    .promise()
-
-  return results.Items
+  return null
 }
 
-const put = async ({ tableName, record }) => {
+const put = async record => {
   const params = {
-    TableName: tableName,
+    TableName: tableName(),
     Item: record
   }
 
@@ -59,13 +55,42 @@ const put = async ({ tableName, record }) => {
     .put(params)
     .promise()
 
-  return record
+  return stripCredentials(record)
+}
+
+const create = async record => {
+  const newRecord = {
+    id: uuid(),
+    ...record
+  }
+
+  await put(newRecord)
+
+  return stripCredentials(newRecord)
+}
+
+const update = async (id, updatedData) => {
+  const user = await get(id, { raw: true })
+
+  if (!user) {
+    throw new Error('404')
+  }
+
+  const mergedUserData = {
+    ...user,
+    ...updatedData
+  }
+
+  // Note: This updates by overwriting the whole record
+  await put(mergedUserData)
+
+  return stripCredentials(mergedUserData)
 }
 
 // Can't call this method `delete` as it is a reserved word
-const del = async ({ tableName, id }) => {
+const del = async id => {
   const params = {
-    TableName: tableName,
+    TableName: tableName(),
     Key: {
       id
     }
@@ -79,7 +104,7 @@ const del = async ({ tableName, id }) => {
 module.exports = {
   resetClient,
   get,
-  scan,
-  del,
-  put
+  create,
+  update,
+  del
 }

@@ -10,7 +10,6 @@
   ],
   "rules": {
     "comma-dangle": ["error", "never"],
-    "curly": ["error", "multi-or-nest"],
     "no-console": "off",
     "no-multiple-empty-lines": ["error", {"max": 1, "maxEOF": 0}],
     "nonblock-statement-body-position": ["error", "below"],
