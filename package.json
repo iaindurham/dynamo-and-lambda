@@ -21,7 +21,7 @@
   "homepage": "https://github.com/iaindurham/dynamo-and-lambda#readme",
   "husky": {
     "hooks": {
-      "pre-push": "npm run lint && npm test"
+      "pre-push": "npm run lint && npm run test:coverage"
     }
   },
   "jest": {
