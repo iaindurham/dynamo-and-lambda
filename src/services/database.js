@@ -27,7 +27,7 @@ function resetClient() {
   createdClient = null
 }
 
-const get = async (id, { raw = false } = {}) => {
+const get = async (id, { includeCredentials = false } = {}) => {
   const params = {
     TableName: tableName(),
     Key: {
@@ -39,7 +39,7 @@ const get = async (id, { raw = false } = {}) => {
     .promise()
 
   if (result.Item) {
-    return raw ? result.Item : stripCredentials(result.Item)
+    return includeCredentials ? result.Item : stripCredentials(result.Item)
   }
 
   return null
@@ -70,7 +70,7 @@ const create = async record => {
 }
 
 const update = async (id, updatedData) => {
-  const user = await get(id, { raw: true })
+  const user = await get(id, { includeCredentials: true })
 
   if (!user) {
     throw new Error('404')

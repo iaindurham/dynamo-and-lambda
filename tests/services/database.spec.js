@@ -44,12 +44,12 @@ describe('Services: database', () => {
     })
 
     test(`Should return the record with credentials WHEN id DOES match a record
-    AND the "raw" option is passed in`, async () => {
+    AND the "includeCredentials" option is passed in`, async () => {
       mockGet.mockResolvedValue({
         Item: userMocks.createdUser
       })
 
-      const result = await database.get(idToGet, { raw: true })
+      const result = await database.get(idToGet, { includeCredentials: true })
 
       expect(mockGet).toHaveBeenCalledWith(
         expect.objectContaining({
