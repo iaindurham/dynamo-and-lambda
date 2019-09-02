@@ -14,7 +14,6 @@ const createClient = () => {
         endpoint: 'http://localhost:8000'
       })
     : new AWS.DynamoDB.DocumentClient({ convertEmptyValues: true })
-  // createdClient = dynamodb.doc
 
   return createdClient
 }

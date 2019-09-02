@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Example of using DynamoDB and Lambda in AWS using Serverless framework",
   "scripts": {
-    "deploy": "env-cmd serverless deploy",
+    "deploy": "env-cmd sls deploy",
     "format": "prettier --write '**/*.js'",
     "lint": "eslint '**/*.js'",
     "test": "jest",
